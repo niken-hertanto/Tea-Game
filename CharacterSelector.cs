@@ -8,9 +8,9 @@ using UnityEngine.UI;
 public class CharacterSelector : MonoBehaviour {
 
     public player playerPrefab;
-    public List<player> players; //
-    public Character[] ninja; //
-    public Character[] samurai; //
+    public List<player> players; 
+    public Character[] ninja; 
+    public Character[] samurai; 
     EventSystem eventSystem;
     StandaloneInputModule inputModule;
 
@@ -21,6 +21,8 @@ public class CharacterSelector : MonoBehaviour {
     public GameObject Samurai02Panel;
     public GameObject CharPanels;
     public GameObject ControlPanel;
+
+    //Determines if the game has started and if this is the first round or not
     bool gameStarts = true;
     bool firstGame = true;
 
@@ -47,6 +49,9 @@ public class CharacterSelector : MonoBehaviour {
     bool playSound = false;
 
     //Images for Speech Bubbles and HP Bars
+    //  Agg = aggressive (angry image)
+    //  Pass = passive (neutral image)
+    //  Dead = dead (dead image)
     public Image ninja01Agg;
     public Image ninja01Pass;
     public Image ninja01Dead;
@@ -215,6 +220,7 @@ public class CharacterSelector : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
+        //If there is less than 2 players, the game cannot be
         if (players.Count < 2)
         {
             if (playSound == false)
@@ -229,6 +235,7 @@ public class CharacterSelector : MonoBehaviour {
             }
         }
 
+        //If players are not playing (fighting), then they must select a character
         if (!playing)
         {
             //Multiplayer Input
@@ -236,20 +243,23 @@ public class CharacterSelector : MonoBehaviour {
 
             //Singleplayer Input
             //SPcharSelect();
-        } else
+        } else 
         {
+            //If the players are playing, then for each player:
             for (int i = 0; i < players.Count; i++)
             {
+                //If the players are inside the tea room, stop the fighting BGM
                 if(players[i].inTeaRoom)
                 {
                     fightLevelBg.Stop();
                 }
-
+                //Update the player's health
                 if (players[i].lives <= 0)
                 {
                     updateCharHealth(players[i]);
                     players[0].canTurnRed = false;
                     players[1].canTurnRed = false;
+                    //If the characters are dead (0 HP), show game over screen and then send back to character select screen
                     if((ninja[0].HP <= 0 && ninja[1].HP <= 0) ||(samurai[0].HP <= 0 && samurai[1].HP <= 0))
                     {
                         gameover.SetActive(true);
@@ -272,6 +282,7 @@ public class CharacterSelector : MonoBehaviour {
 
     }
 
+    //Each player begins by selecting a character
     void initialSelect()
     {
         if (ninja[0].HP > 0)
@@ -286,6 +297,7 @@ public class CharacterSelector : MonoBehaviour {
         }
     }
 
+    //After each round, the character remains with the health from the previous round
     void updateCharHealth(player p)
     {
         for (int i = 0; i < ninja.Length; i++)
@@ -302,6 +314,7 @@ public class CharacterSelector : MonoBehaviour {
         }
     }
 
+    //At the start of each round, the players start with nothing (no characters, no fighting, etc)
     void initPlayers()
     {
         for (int i = 0; i < players.Count; i++)
@@ -471,6 +484,8 @@ public class CharacterSelector : MonoBehaviour {
                 }
                 initialSelect();
             }
+
+            //If one player have not chosen their character, tell them to choose a character.
             if (!players[0].hasCharacter)
             {
                 MenuText.text = "Player 1 choose your character!";
@@ -483,6 +498,7 @@ public class CharacterSelector : MonoBehaviour {
                 setMenuInput(players[1].conNumber);
                 currentPlayer = 1;
             }
+            //If both players has a character, remove character selection screen
             else if (players.Count == 2 && players[0].hasCharacter && players[1].hasCharacter)
             {
                 Ninja01Panel.SetActive(false);
@@ -490,6 +506,7 @@ public class CharacterSelector : MonoBehaviour {
                 Samurai01Panel.SetActive(false);
                 Samurai02Panel.SetActive(false);
                 CharPanels.SetActive(false);
+                //If this is the first game, then show the controls instruction of how to play the game
                 if (firstGame == true)
                 {
                     ControlPanel.SetActive(true);
@@ -507,17 +524,19 @@ public class CharacterSelector : MonoBehaviour {
                 fightLevelBg.Play();
                 Debug.Log(fightLevelBg.isPlaying);
 
+                //For as many players as there are, place these characters unto the screen
                 for (int i = 0; i < players.Count; i++)
                 {
                     players[i].gameObject.transform.position = new Vector3(i * .7f, 0, 0);
                     players[i].gameObject.SetActive(true);
                 }
+                //The players are now playing the game
                 playing = true;
             }
         }
     }
 
-    //One player can choose whatever.
+    //One player can choose whichever character they wish.
     void SPcharSelect()
     {
         //Singleplayer Input
@@ -754,6 +773,7 @@ public class CharacterSelector : MonoBehaviour {
         return false;
     }
 
+    //Determines who lost and shows image for the winning player
     IEnumerator playerlose(int i)
     {
         if(i == 0)
@@ -771,10 +791,12 @@ public class CharacterSelector : MonoBehaviour {
         
         initialSelect();
     }
+    
     //Open up Control Page
     void controllerPanel(int conNumber)
     {
         ControlPanel.SetActive(true);
+        //If either player presses "start", remove character selection screen and the controls instruction page to begin the game.
         if (Input.GetButtonDown("Start_" + players[0].conNumber) || Input.GetButtonDown("Start_" + players[1].conNumber))
         {
             Debug.Log("I PRESSED START PLEASE WORK");
