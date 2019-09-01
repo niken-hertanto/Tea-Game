@@ -7,6 +7,19 @@ using UnityEngine.UI;
 
 public class CharacterSelector : MonoBehaviour {
 
+    /* **********************************************************************************
+     *      Character Selection Screen
+     *          - Players chooses their character
+     *          - Each character have a different character portrait art, HP Bar, and
+     *              speech bubble depending on the amount of HP they have from the 
+     *              last round.
+     *          - After each round, players immediately go back to the character selection
+     *              screen with the different artwork shown ^
+     *          - At the first game, after selecting the character the controller
+     *              intructions page is shown
+     ************************************************************************************ */
+
+
     public player playerPrefab;
     public List<player> players; 
     public Character[] ninja; 
