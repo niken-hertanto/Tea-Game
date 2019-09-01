@@ -18,7 +18,7 @@ public class CharacterSelector : MonoBehaviour {
      *          - At the first game, after selecting the character the controller
      *              intructions page is shown
      ************************************************************************************ */
-
+      
 
     public player playerPrefab;
     public List<player> players; 
